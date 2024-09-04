@@ -1,10 +1,8 @@
 package com.example.tradernet_test_task_simplified.presenter.home
 
-import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tradernet_test_task_simplified.data.model.request.GetQuotesRequest
-import com.example.tradernet_test_task_simplified.data.model.response.Quote
 import com.example.tradernet_test_task_simplified.data.repo.ConnectionState
 import com.example.tradernet_test_task_simplified.data.repo.QuoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,16 +47,27 @@ class QuoteViewModel @Inject constructor(
             quoteRepository.fetchAndSubscribeQuotes(request).collect { connectionState ->
                 when (connectionState) {
                     is ConnectionState.Connected -> _uiState.update { currentState ->
-                        currentState.copy(isLoading = false)
+                        currentState.copy(
+                            isLoading = false
+                        )
                     }
 
                     ConnectionState.Disconnected -> _uiState.update { currentState ->
-                        currentState.copy(isLoading = false)
+                        currentState.copy(
+                            isLoading = false
+                        )
                     }
 
                     is ConnectionState.Success -> _uiState.update { currentState ->
                         currentState.copy(
                             data = connectionState.data,
+                            isLoading = false
+                        )
+                    }
+
+                    is ConnectionState.Error -> _uiState.update { currentState ->
+                        currentState.copy(
+                            error = connectionState.errorMessage,
                             isLoading = false
                         )
                     }
@@ -69,18 +78,5 @@ class QuoteViewModel @Inject constructor(
 
     fun onQuoteAnimationEnd(ticker: String) = viewModelScope.launch(Dispatchers.IO) {
         quoteRepository.onAnimationEnd(ticker)
-    }
-}
-
-@Immutable
-data class HomeContract(
-    val data: List<Quote>,
-    val isLoading: Boolean,
-) {
-    companion object {
-        fun initial(): HomeContract = HomeContract(
-            data = emptyList(),
-            isLoading = false,
-        )
     }
 }

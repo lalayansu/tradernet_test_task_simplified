@@ -3,7 +3,7 @@ package com.example.tradernet_test_task_simplified.data.model.response
 import java.math.BigDecimal
 
 data class Quote(
-    val ticker: String? = null,
+    val ticker: String,
     val priceChangeInPoints: BigDecimal? = null,
     val latestTradePrice: BigDecimal? = null,
     val exchangeOfLatestTrade: String? = null,
@@ -17,8 +17,9 @@ data class Quote(
     val animationDirection: AnimationDirection = AnimationDirection.NONE
 ) {
     fun mergeWith(newData: Quote) = copy(
-        ticker = newData.ticker.compareStrings(ticker),
-        exchangeOfLatestTrade = newData.exchangeOfLatestTrade.compareStrings(exchangeOfLatestTrade),
+        exchangeOfLatestTrade = newData.exchangeOfLatestTrade.compareStrings(
+            exchangeOfLatestTrade
+        ),
         name = newData.name.compareStrings(name),
         minStep = newData.minStep.compareBigDecimals(minStep),
         priceChangeByPercentage = newData.priceChangeByPercentage.compareBigDecimals(

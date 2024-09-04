@@ -50,7 +50,7 @@ class QuoteRepository @Inject constructor(
                         val quoteModel = Gson().fromJson(quoteModelJson, QuoteModel::class.java)
 
                         if (quoteModel != null) {
-                            addQuoteToQueue(quoteModel.toQuote())
+                            quoteModel.toQuote()?.let { addQuoteToQueue(it) }
                         }
                     }
                 }
@@ -87,13 +87,17 @@ class QuoteRepository @Inject constructor(
     }
 
     fun fetchAndSubscribeQuotes(request: GetQuotesRequest): Flow<ConnectionState> = flow {
-        val quoteFields = fetchQuotes(request).first()
-        if (quoteFields.isNotEmpty()) {
-            subscribeQuotes(quoteFields).collect { connectionState ->
-                emit(connectionState)
+        try {
+            val quoteFields = fetchQuotes(request).first()
+            if (quoteFields.isNotEmpty()) {
+                subscribeQuotes(quoteFields).collect { connectionState ->
+                    emit(connectionState)
+                }
+            } else {
+                emit(ConnectionState.Disconnected)
             }
-        } else {
-            emit(ConnectionState.Disconnected)
+        } catch (e: Exception) {
+            emit(ConnectionState.Error(errorMessage = "An unexpected error occurred. Please try again."))
         }
     }
 

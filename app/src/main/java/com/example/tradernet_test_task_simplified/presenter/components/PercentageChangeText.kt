@@ -33,14 +33,14 @@ fun PercentageChangeText(
     shouldAnimate: Boolean? = false,
     onAnimationEnd: () -> Unit = {},
     animationDirection: AnimationDirection? = AnimationDirection.NONE,
-    defaultTextColor: Color = Color.Black,
+    defaultTextColor: Color = MaterialTheme.colorScheme.onBackground,
     defaultBackgroundColor: Color = Color.Transparent,
-    positivePercentageChangeBackgroundColor: Color = Color.Green,
-    positivePercentageChangeTextColor: Color = Color.White,
-    positivePercentageTextColor: Color = Color.Green,
-    negativePercentageChangeBackgroundColor: Color = Color.Red,
-    negativePercentageChangeTextColor: Color = Color.White,
-    negativePercentageTextColor: Color = Color.Red,
+    positivePercentageChangeBackgroundColor: Color = MaterialTheme.colorScheme.primary,
+    positivePercentageChangeTextColor: Color = MaterialTheme.colorScheme.background,
+    positivePercentageTextColor: Color = MaterialTheme.colorScheme.primary,
+    negativePercentageChangeBackgroundColor: Color = MaterialTheme.colorScheme.error,
+    negativePercentageChangeTextColor: Color = MaterialTheme.colorScheme.background,
+    negativePercentageTextColor: Color = MaterialTheme.colorScheme.error,
 ) {
     val backgroundColorAnimation = remember { Animatable(defaultBackgroundColor) }
     val targetTextColorAnimation = remember {

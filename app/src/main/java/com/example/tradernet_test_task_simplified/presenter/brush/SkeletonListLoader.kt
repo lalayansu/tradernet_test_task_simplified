@@ -1,4 +1,4 @@
-package com.example.presenter.components.brush
+package com.example.tradernet_test_task_simplified.presenter.brush
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

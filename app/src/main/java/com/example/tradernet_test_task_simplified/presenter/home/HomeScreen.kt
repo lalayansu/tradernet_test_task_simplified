@@ -8,16 +8,18 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.presenter.components.brush.SkeletonListLoader
 import com.example.tradernet_test_task_simplified.data.model.response.Quote
+import com.example.tradernet_test_task_simplified.presenter.brush.SkeletonListLoader
 import com.example.tradernet_test_task_simplified.presenter.components.QuoteItemView
 
 @Composable
@@ -26,16 +28,42 @@ fun HomeScreen(
 ) {
     val state by homeViewModel.uiState.collectAsState()
 
-    HomeScreenContent(
-        modifier = Modifier,
-        quoteList = state.data,
-        isLoading = state.isLoading,
-        onAnimationEnd = { ticker ->
-            ticker?.let {
-                homeViewModel.onQuoteAnimationEnd(it)
+    if (state.error != null) {
+        ErrorScreenContent(
+            errorText = state.error.orEmpty()
+        )
+    } else {
+        HomeScreenContent(
+            modifier = Modifier,
+            quoteList = state.data,
+            isLoading = state.isLoading,
+            onAnimationEnd = { ticker ->
+                ticker?.let {
+                    homeViewModel.onQuoteAnimationEnd(it)
+                }
             }
-        }
-    )
+        )
+    }
+}
+
+@Composable
+fun ErrorScreenContent(
+    modifier: Modifier = Modifier,
+    errorText: String
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = errorText,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable
@@ -68,7 +96,7 @@ fun HomeScreenContent(
         itemsIndexed(
             items = quoteList,
             key = { _, quote ->
-                quote.ticker.orEmpty()
+                quote.ticker
             }
         ) { index, quote ->
             QuoteItemView(

@@ -95,20 +95,24 @@ data class QuoteModel(
     val yld_ytm_bid: Int? = null
 )
 
-fun QuoteModel.toQuote() = Quote(
-    ticker = c,
-    priceChangeInPoints = chg,
-    latestTradePrice = ltp,
-    exchangeOfLatestTrade = ltr,
-    name = name,
-    minStep = min_step,
-    priceChangeByPercentage = pcp,
-    percentageChangeText = pcp?.let { percent ->
-        if (percent > BigDecimal.ZERO) "+$percent%" else "$percent%"
-    },
-    priceChangeInPointsText = chg?.roundToMinStep(min_step),
-    latestTradePriceText = ltp?.roundToMinStep(min_step),
-    animationDirection = AnimationDirection.NONE,
-    shouldAnimatePercentageChange = false
-)
+fun QuoteModel.toQuote() = if (!c.isNullOrEmpty()) {
+    Quote(
+        ticker = c,
+        priceChangeInPoints = chg,
+        latestTradePrice = ltp,
+        exchangeOfLatestTrade = ltr,
+        name = name,
+        minStep = min_step,
+        priceChangeByPercentage = pcp,
+        percentageChangeText = pcp?.let { percent ->
+            if (percent > BigDecimal.ZERO) "+$percent%" else "$percent%"
+        },
+        priceChangeInPointsText = chg?.roundToMinStep(min_step),
+        latestTradePriceText = ltp?.roundToMinStep(min_step),
+        animationDirection = AnimationDirection.NONE,
+        shouldAnimatePercentageChange = false
+    )
+} else {
+    null
+}
 
